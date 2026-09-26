@@ -1,7 +1,4 @@
-"""Wallpaper rolls: perimeter strips, pattern repeat on drop length, strips per roll.
-
-Open-path consumers may rebuild pattern-on geometry while keeping match_pattern=False.
-"""
+"""Wallpaper rolls: perimeter strips, pattern repeat on drop length, strips per roll."""
 
 from app.engines.helpers import ceil_units, floor_units
 from app.modules.pattern_match import effective_pattern_m

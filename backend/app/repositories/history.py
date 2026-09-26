@@ -18,15 +18,11 @@ def insert_run(wall_id: int, roll_id: int, result: dict, note: str = "") -> int:
 
 
 def list_runs(limit: int = 50):
-    from app.services.match_off_open import open_as_pattern_on
-
     conn = connect()
     try:
         rows = conn.execute(
             """
-            SELECT r.*, w.name wall_name, rl.name roll_name,
-                   w.perimeter wall_perimeter, w.height wall_height,
-                   rl.width roll_width, rl.length roll_length, rl.pattern_cm roll_pattern_cm
+            SELECT r.*, w.name wall_name, rl.name roll_name
             FROM calc_runs r
             LEFT JOIN walls w ON w.id=r.wall_id
             LEFT JOIN rolls rl ON rl.id=r.roll_id
@@ -37,15 +33,9 @@ def list_runs(limit: int = 50):
         out = []
         for row in rows:
             d = dict(row)
-            dims = {
-                "perimeter": d.get("wall_perimeter"),
-                "height": d.get("wall_height"),
-                "roll_width": d.get("roll_width"),
-                "roll_length": d.get("roll_length"),
-                "pattern_cm": d.get("roll_pattern_cm"),
-            }
-            raw = json.loads(d.pop("result_json"))
-            d["result"] = open_as_pattern_on(raw, dims)
+            # 结果以落库时的口径原样返回：关对花的记录永远是
+            # drop_len==层高、pattern_m==0、无花卷数，不随设置默认或卷材花高重算。
+            d["result"] = json.loads(d.pop("result_json"))
             out.append(d)
         return out
     finally:
