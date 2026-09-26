@@ -13,6 +13,6 @@ onMounted(async () => { items.value = (await getJSON('/api/runs')).items })
       每条 {{ r.result?.drop_len_m }}m · 花高 {{ r.result?.pattern_m }}m
     </li>
   </ul>
-  <p class="hint">开放视图保留对花开关标签，条长与卷数按列表接口返回。</p>
+  <p class="hint">记录按写入时的对花口径定格展示：关对花的条长等于层高，不随设置页默认开关变化。</p>
   </div>
 </template>

@@ -55,3 +55,17 @@ def test_default_change_does_not_touch_old_runs(monkeypatch, tmp_path):
     assert old["match_pattern"] is True
     assert old["drop_len_m"] == 3.44
     assert old["rolls"] == 19
+
+
+def test_off_run_stays_off_when_default_flips_on(monkeypatch, tmp_path):
+    _fresh_db(monkeypatch, tmp_path)
+    settings_repo.set_value("default_match_pattern", "0")
+    off = estimate_service.run_estimate(2, 2, True, "", None)
+    assert off["match_pattern"] is False
+    assert off["drop_len_m"] == 2.8
+    settings_repo.set_value("default_match_pattern", "1")
+    runs = {r["id"]: r for r in history.list_runs()}
+    old = runs[off["run_id"]]["result"]
+    assert old["match_pattern"] is False
+    assert old["drop_len_m"] == 2.8
+    assert old["rolls"] == 13
